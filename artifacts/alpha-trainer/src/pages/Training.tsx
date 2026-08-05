@@ -117,7 +117,7 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
         setQuestionIndex(nextIndex);
         startNewQuestion(question.letter);
       }
-    }, isCorrect ? 400 : 1200);
+    }, isCorrect ? 900 : 1800);
 
   }, [question, questionIndex, startTime, startNewQuestion, settings.questionsPerSession]);
 
