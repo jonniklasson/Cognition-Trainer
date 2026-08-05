@@ -6,7 +6,7 @@ import { loadSettings, saveSession, LetterStat, Session } from "../lib/storage";
 type FeedbackState = "idle" | "correct" | "incorrect";
 
 export function Training({ onComplete, onQuit }: { onComplete: (session: Session) => void, onQuit: () => void }) {
-  const settings = loadSettings();
+  const [settings] = useState(() => loadSettings());
   const [questionIndex, setQuestionIndex] = useState(0);
   const [question, setQuestion] = useState<Question | null>(null);
   const [feedback, setFeedback] = useState<FeedbackState>("idle");
