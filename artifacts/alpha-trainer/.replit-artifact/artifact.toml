@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Alpha Trainer"
+description = "A cognition training app that drills alphabet sequencing — asking what letter comes before or after a given letter. The goal is to train users to store and retrieve alphabet data as random-access knowledge rather than sequential recitation. Tracks response time, accuracy, and session progress to measure cognitive improvement over time."
+version = "1.0.0"
+id = "artifacts/alpha-trainer"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21117
+
+[services.development]
+run = "pnpm --filter @workspace/alpha-trainer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/alpha-trainer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/alpha-trainer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21117"
+BASE_PATH = "/"
