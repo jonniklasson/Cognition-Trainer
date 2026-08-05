@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { generateQuestion, Question } from "../lib/alphabet";
 import { loadSettings, saveSession, LetterStat, Session } from "../lib/storage";
+import { EASY_TARGET_MS, HARD_TARGET_MS, MIN_VALID_RESPONSE_MS } from "../lib/constants";
 
 type FeedbackState = "idle" | "correct" | "incorrect";
 
@@ -66,7 +67,8 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
       avgResponseMs,
       fastestMs,
       slowestMs,
-      letterStats
+      letterStats,
+      difficulty: settings.difficulty,
     };
 
     saveSession(session);
@@ -79,12 +81,15 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
     const key = e.key.toUpperCase();
     if (!/^[A-Z]$/.test(key)) return;
 
-    isTransitioning.current = true;
-    if (timerRef.current) cancelAnimationFrame(timerRef.current);
-    
     const endTime = performance.now();
     const timeTaken = endTime - startTime;
-    
+
+    // Ignore accidental keypresses faster than any plausible human response
+    if (timeTaken < MIN_VALID_RESPONSE_MS) return;
+
+    isTransitioning.current = true;
+    if (timerRef.current) cancelAnimationFrame(timerRef.current);
+
     const isCorrect = key === question.answer;
     
     if (isCorrect) {

@@ -1,10 +1,15 @@
 import { motion } from "framer-motion";
 import { Session, LetterStat } from "../lib/storage";
 import { ALPHABET } from "../lib/alphabet";
+import { EASY_TARGET_MS, HARD_TARGET_MS } from "../lib/constants";
 
 export function Summary({ session, onHome, onRetry }: { session: Session, onHome: () => void, onRetry: () => void }) {
   const accuracy = (session.correct / session.totalQuestions) * 100;
-  
+
+  // Pick the benchmark for this session's difficulty
+  const targetMs = session.difficulty === "hard" ? HARD_TARGET_MS : EASY_TARGET_MS;
+  const beatTarget = session.avgResponseMs > 0 && session.avgResponseMs < targetMs;
+
   // Find trouble letters (lowest accuracy or slowest)
   const lettersArray = Object.entries(session.letterStats).map(([letter, stats]) => ({
     letter,
@@ -27,15 +32,28 @@ export function Summary({ session, onHome, onRetry }: { session: Session, onHome
       <div className="text-center mb-10 mt-8">
         <h1 className="text-3xl font-bold tracking-tight text-primary uppercase mb-2">Session Complete</h1>
         <p className="text-muted-foreground text-sm uppercase tracking-widest">
-          {session.totalQuestions} questions processed
+          {session.totalQuestions} questions — {session.difficulty} mode
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatBox label="Accuracy" value={`${accuracy.toFixed(1)}%`} highlight={accuracy === 100} />
-        <StatBox label="Avg Time" value={`${(session.avgResponseMs / 1000).toFixed(2)}s`} />
+        <StatBox label="Avg Time" value={`${(session.avgResponseMs / 1000).toFixed(2)}s`} highlight={beatTarget} />
         <StatBox label="Fastest" value={`${(session.fastestMs / 1000).toFixed(2)}s`} />
         <StatBox label="Slowest" value={`${(session.slowestMs / 1000).toFixed(2)}s`} />
+      </div>
+
+      {/* Benchmark comparison */}
+      <div className="mb-8 p-4 border border-border bg-card flex items-center justify-between gap-4">
+        <div>
+          <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
+            Human benchmark ({session.difficulty} mode)
+          </div>
+          <div className="text-sm font-bold">{(targetMs / 1000).toFixed(1)}s avg — automatic recall threshold</div>
+        </div>
+        <div className={`text-sm font-bold uppercase tracking-widest px-3 py-1 border ${beatTarget ? "text-primary border-primary bg-primary/10" : "text-muted-foreground border-border"}`}>
+          {beatTarget ? "Beat" : "Not yet"}
+        </div>
       </div>
 
       {troubleLetters.length > 0 && (

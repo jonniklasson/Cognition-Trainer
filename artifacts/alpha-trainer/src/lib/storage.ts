@@ -13,6 +13,7 @@ export interface Session {
   fastestMs: number;
   slowestMs: number;
   letterStats: Record<string, LetterStat>;
+  difficulty: "easy" | "hard";
 }
 
 export interface SerialRound {
