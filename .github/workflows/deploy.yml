@@ -41,6 +41,13 @@ jobs:
 
       - name: Build
         run: pnpm run build
+        
+      - name: Check build output
+        run: |
+          echo "Contents of dist:"
+          find ./dist -maxdepth 4 -type f 2>/dev/null || true
+          echo "Contents of workspace:"
+          ls -la
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
