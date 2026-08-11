@@ -47,9 +47,9 @@ jobs:
           echo "Contents of artifacts:"
           ls -la ./artifacts
           echo "Alpha-trainer directory:"
-          ls -la ./artifacts/Alpha-trainer
+          ls -la ./artifacts/alpha-trainer
           echo "Build output:"
-          find ./artifacts/Alpha-trainer/dist -maxdepth 4 -type f 2>/dev/null || true
+          find ./artifacts/alpha-trainer/dist -maxdepth 4 -type f 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -57,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./artifacts/Alpha-trainer/dist/public
+          path: ./artifacts/alpha-trainer/dist/public
 
   deploy:
     environment:
