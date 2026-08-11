@@ -42,6 +42,13 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Check Alpha-trainer build output
+        run: |
+          echo "Alpha-trainer directory:"
+          ls -la ./artifacts/Alpha-trainer
+          echo "Build output:"
+          find ./artifacts/Alpha-trainer/dist -maxdepth 4 -type f 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
