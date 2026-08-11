@@ -44,6 +44,8 @@ jobs:
 
       - name: Check Alpha-trainer build output
         run: |
+          echo "Contents of artifacts:"
+          ls -la ./artifacts
           echo "Alpha-trainer directory:"
           ls -la ./artifacts/Alpha-trainer
           echo "Build output:"
