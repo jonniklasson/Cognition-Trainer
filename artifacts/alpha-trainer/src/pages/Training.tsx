@@ -24,7 +24,8 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
   
   const timerRef = useRef<number | null>(null);
   const isTransitioning = useRef(false);
-
+  const inputRef = useRef<HTMLInputElement>(null);
+  
   const startNewQuestion = useCallback((lastLetter?: string) => {
     isTransitioning.current = false;
     const q = generateQuestion(settings.questionTypes, settings.difficulty, lastLetter);
@@ -33,6 +34,9 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
     const now = performance.now();
     setStartTime(now);
     setElapsed(0);
+    useEffect(() => {
+    inputRef.current?.focus();
+    }, [questionIndex, question]);
 
     if (timerRef.current) cancelAnimationFrame(timerRef.current);
     
@@ -176,6 +180,25 @@ export function Training({ onComplete, onQuit }: { onComplete: (session: Session
 
       {/* Main Training Area */}
       <div className="flex-1 flex flex-col items-center justify-center relative p-6">
+        <input
+  ref={inputRef}
+  type="text"
+  inputMode="text"
+  autoFocus
+  autoComplete="off"
+  autoCorrect="off"
+  spellCheck={false}
+  className="absolute opacity-0 pointer-events-none"
+  aria-hidden="true"
+  onChange={(e) => {
+    const key = e.target.value.slice(-1).toUpperCase();
+    e.target.value = "";
+
+    if (/^[A-Z]$/.test(key)) {
+      handleKeyPress(new KeyboardEvent("keydown", { key }));
+    }
+  }}
+/>
         
         <AnimatePresence mode="wait">
           <motion.div 
