@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BASE_PATH: /Cognition-Trainer/
+      BASE_PATH: /Cognitive-Trainer/
       PORT: 4173
 
     steps:
